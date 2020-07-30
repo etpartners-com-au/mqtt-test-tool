@@ -10,7 +10,8 @@ username="Tibco"
 #TODO:
 password="!CHANGEME"
 port=8883
-topic="PFPCS/Outbound/WorkExecute"
+'''So - even if te topic/is/like/this - make the topic.is.like.this'''
+topic="PFPCS.Outbound.WorkExecuted"
 messageFile="localMessage.xml"
 
 
@@ -20,10 +21,12 @@ import time
 import logging
 import string
 
-logger=logging.getLogger(__name__)
+
 '''This is how much details you want... DEBUG, INFO, WARNING, etc - https://docs.python.org/3/howto/logging.html'''
 logging.basicConfig(level=logging.INFO)
+logging.getLogger('paho').setLevel(level=logging.INFO)
 
+logger=logging.getLogger(__name__)
 
 
 def myMessage(client, userdata, message):
@@ -45,24 +48,29 @@ def myDisconnect(client, userdata, rc):
 mqttc = mqttclient.Client(client_id="", clean_session=True, userdata=None, protocol=mqttclient.MQTTv311, transport="tcp")
 
 mqttc.tls_set()
+mqttc.enable_logger()
 mqttc.username_pw_set(username,password)
 mqttc.on_publish=myPublish
 mqttc.on_message = myMessage
 mqttc.on_connect = myConnect
 mqttc.on_disconnect = myDisconnect
 
-mqttc.loop_start()
 
 status=mqttc.connect(host, port, keepalive=60, bind_address="")
+mqttc.loop_start()
 
 logger.info("connected connection={}".format(status))
+
+'''I want to 'consume things from this topic'''
+# mqttc.subscribe(topic)
+
 
 'open the file for as little as possible time'
 with open(messageFile) as f:
     output=mqttc.publish(topic, f.read())
 
 
-time.sleep(10)
+time.sleep(5)
 mqttc.disconnect()
 mqttc.loop_stop()
 
