@@ -5,7 +5,7 @@ Created on Tue Jun 16 10:22:01 2020
 @author: TerryRankine
 """
 
-host="b-24314de1-f8eb-403e-a0a4-3c5fa260915f-1.mq.ap-southeast-2.amazonaws.com"
+host="b-!updateME!-1.mq.ap-southeast-2.amazonaws.com"
 username="Tibco"
 #TODO:
 password="!CHANGEME"
